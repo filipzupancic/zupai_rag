@@ -1,0 +1,48 @@
+services:
+  ollama-embeddings:
+    image: ollama/ollama:latest
+    container_name: ollama-embeddings
+    env_file:
+      - ./.env
+    volumes:
+      - ./ollama_models:/root/.ollama
+    restart: unless-stopped
+    command: ["serve"]
+  
+  ollama-inference:
+    image: ollama/ollama:latest
+    container_name: ollama-inference
+    volumes:
+      - ./ollama_models:/root/.ollama
+    restart: unless-stopped
+    command: ["serve"]
+    env_file:
+      - ./.env
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    env_file:
+      - ./.env
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    restart: unless-stopped
+
+  rag-api:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: rag-api
+    ports:
+      - "${FASTAPI_PORT}:${FASTAPI_PORT}"
+    depends_on:
+      ollama-embeddings:
+        condition: service_started
+      ollama-inference:
+        condition: service_started
+      qdrant:
+        condition: service_started
+    env_file:
+      - ./.env
+    volumes:
+      - ./app:/app
