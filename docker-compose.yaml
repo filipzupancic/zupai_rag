@@ -12,16 +12,18 @@ services:
   ollama-inference:
     image: ollama/ollama:latest
     container_name: ollama-inference
+    env_file:
+      - ./.env
     volumes:
       - ./ollama_models:/root/.ollama
     restart: unless-stopped
     command: ["serve"]
-    env_file:
-      - ./.env
 
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant
+    ports:
+      - "${QDRANT_PORT}:${QDRANT_PORT}"
     env_file:
       - ./.env
     volumes:
@@ -46,3 +48,4 @@ services:
       - ./.env
     volumes:
       - ./app:/app
+    restart: unless-stopped
