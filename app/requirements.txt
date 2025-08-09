@@ -1,9 +1,8 @@
-ollama
-fastapi
-uvicorn
-pydantic
-langchain
-python-dotenv
-qdrant-client
-langchain-qdrant
-langchain-community
+ollama==0.5.1
+fastapi==0.116.1
+uvicorn==0.35.0
+pydantic==2.11.7
+langchain==0.3.27
+qdrant-client==1.15.1
+langchain-qdrant==0.2.0
+langchain-community==0.3.27
